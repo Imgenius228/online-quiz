@@ -1,0 +1,22 @@
+{% extends 'quiz/base.html' %}
+
+{% block title %}
+    Прохождение викторины
+{% endblock %}
+
+{% block content %}
+    <h2>Викторина: {{ quiz.title }}</h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        {% if not submitted %}
+            {{ form.as_p }}
+            <button type="submit">Отправить ответы</button>
+        {% else %}
+            <h3>Ваши ответы отправлены!</h3>
+        {% endif %}
+    </form>
+
+{% endblock %}
+

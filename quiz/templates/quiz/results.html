@@ -1,0 +1,44 @@
+{% extends 'quiz/base.html' %}
+
+{% block title %}
+    Результаты викторины
+{% endblock %}
+
+{% block content %}
+    <h2>Результаты вашей викторины "{{ quiz.title }}"</h2>
+    <p>Ваш результат: {{ score }} из {{ total_questions }}</p>
+
+    <ul>
+        {% for question, user_answer_id in user_answers.items %}
+            <li>
+                <strong>{{ question.text }}</strong><br>
+                <span>Ваш ответ: </span>
+                {% if user_answer_id %}
+                    {% for answer in question.answers.all %}
+                        {% if answer.id|stringformat:"s" == user_answer_id|stringformat:"s" %}
+                            {% if answer.is_correct %}
+                                ✅ {{ answer.text }} — Правильно!
+                            {% else %}
+                                ❌ {{ answer.text }} — Неправильно!
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    ❌ <em>Вы не ответили на этот вопрос.</em>
+                {% endif %}
+                <br>
+                <span>Правильный ответ: </span>
+                {% for answer in question.answers.all %}
+                    {% for qid, correct_id in correct_answers.items %}
+                        {% if qid == question.id|stringformat:"s" and answer.id|stringformat:"s" == correct_id|stringformat:"s" %}
+                            <strong>{{ answer.text }}</strong>
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+            </li>
+            <hr>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'quiz:quiz_home' %}">Вернуться к списку викторин</a>
+{% endblock %}

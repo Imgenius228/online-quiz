@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Онлайн-викторина{% endblock %}</title>
+</head>
+<body>
+    <header>
+        <h1>Онлайн-викторина</h1>
+        <nav>
+            <a href="{% url 'quiz:quiz_home' %}">Главная</a>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}
+        <!-- Контент будет вставляться сюда -->
+        {% endblock %}
+    </main>
+</body>
+</html>
