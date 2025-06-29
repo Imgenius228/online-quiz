@@ -10,8 +10,20 @@ from django.contrib import messages
 
 
 def index(request):
+    query = request.GET.get('q', '')
     quizzes = Quiz.objects.all()
-    return render(request, 'quiz/index.html', {'quizzes': quizzes})
+
+    if query:
+        quizzes = quizzes.filter(title__icontains=query)
+
+    new_quizzes = quizzes.order_by('-created_at')[:5]
+    popular_quizzes = quizzes.order_by('-times_taken')[:5]
+
+    return render(request, 'quiz/index.html', {
+        'new_quizzes': new_quizzes,
+        'popular_quizzes': popular_quizzes,
+        'query': query,
+    })
 
 from django.shortcuts import render, get_object_or_404
 from .models import Quiz

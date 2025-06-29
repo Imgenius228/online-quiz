@@ -1,27 +1,62 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>Онлайн викторина</title>
-    <link rel="stylesheet" href="style.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вікторини</title>
+    <style>
+        body { font-family: Arial; background: #f5f5f5; margin: 0; padding: 0; }
+        header { background: #333; color: white; padding: 10px 20px; display: flex; justify-content: space-between; }
+        .container { max-width: 900px; margin: 20px auto; background: white; padding: 20px; border-radius: 8px; }
+        h2 { border-bottom: 1px solid #ccc; padding-bottom: 5px; }
+        .quiz-list { margin: 15px 0; }
+        .quiz-item { margin-bottom: 10px; }
+        form.search-form { margin-bottom: 20px; }
+        input[type="text"] { padding: 5px; width: 70%; }
+        button { padding: 6px 12px; margin-left: 10px; }
+    </style>
 </head>
 <body>
-    <main class="main container">
-        <h1>Добро пожаловать в онлайн-викторину!</h1>
-
-        {% if quizzes %}
-            <ul class="quiz-list">
-            {% for quiz in quizzes %}
-                <li class="quiz-item">
-                    <span class="quiz-title">{{ quiz.title }}</span>
-                    <a href="{% url 'quiz:take_quiz' quiz.id %}" class="btn">Пройти викторину</a>
-                </li>
-            {% endfor %}
-            </ul>
+<header>
+    <div><strong>Онлайн Вікторина</strong></div>
+    <div>
+        {% if user.is_authenticated %}
+            Привіт, {{ user.username }} | <a href="{% url 'quiz:logout' %}" style="color:lightgray;">Вийти</a>
         {% else %}
-            <p>Викторины пока не созданы.</p>
+            <a href="{% url 'quiz:login' %}" style="color:white;">Вхід</a> |
+            <a href="{% url 'quiz:register' %}" style="color:white;">Реєстрація</a>
         {% endif %}
-    </main>
+    </div>
+</header>
+
+<div class="container">
+    <form method="get" class="search-form">
+        <input type="text" name="q" placeholder="Пошук вікторини..." value="{{ query }}">
+        <button type="submit">Пошук</button>
+    </form>
+
+    <h2>🔝 Популярні вікторини</h2>
+    <div class="quiz-list">
+        {% for quiz in popular_quizzes %}
+            <div class="quiz-item">
+                <strong>{{ quiz.title }}</strong> — {{ quiz.times_taken }} проходжень
+                <br><a href="{% url 'quiz:take_quiz' quiz.id %}">Пройти</a>
+            </div>
+        {% empty %}
+            <p>Немає популярних вікторин.</p>
+        {% endfor %}
+    </div>
+
+    <h2>🆕 Нові вікторини</h2>
+    <div class="quiz-list">
+        {% for quiz in new_quizzes %}
+            <div class="quiz-item">
+                <strong>{{ quiz.title }}</strong> — {{ quiz.created_at|date:"d.m.Y" }}
+                <br><a href="{% url 'quiz:take_quiz' quiz.id %}">Пройти</a>
+            </div>
+        {% empty %}
+            <p>Немає нових вікторин.</p>
+        {% endfor %}
+    </div>
+</div>
 </body>
 </html>

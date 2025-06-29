@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views
 from django.shortcuts import render
+from django.conf import settings
+from django.conf.urls.static import static
 
 app_name = 'quiz'
 
@@ -17,7 +19,7 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('quiz_home/', views.quiz_home, name='quiz_home'),
     path('', views.home_redirect, name='home'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
 def index(request):
