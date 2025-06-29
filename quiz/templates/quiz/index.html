@@ -3,21 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>Онлайн викторина</title>
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-    <h1>Добро пожаловать в онлайн-викторину!</h1>
+    <main class="main container">
+        <h1>Добро пожаловать в онлайн-викторину!</h1>
 
-{% if quizzes %}
-    <ul>
-    {% for quiz in quizzes %}
-        <li>
-            <strong>{{ quiz.title }}</strong>
-            <a href="{% url 'quiz:take_quiz' quiz.id %}">Пройти викторину</a>
-        </li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>Викторины пока не созданы.</p>
-{% endif %}
+        {% if quizzes %}
+            <ul class="quiz-list">
+            {% for quiz in quizzes %}
+                <li class="quiz-item">
+                    <span class="quiz-title">{{ quiz.title }}</span>
+                    <a href="{% url 'quiz:take_quiz' quiz.id %}" class="btn">Пройти викторину</a>
+                </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>Викторины пока не созданы.</p>
+        {% endif %}
+    </main>
 </body>
 </html>

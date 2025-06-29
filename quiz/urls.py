@@ -5,9 +5,18 @@ from django.shortcuts import render
 app_name = 'quiz'
 
 urlpatterns = [
+    path('', views.home_redirect, name='home'),
+    path('register/', views.register, name='register'),
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+    path('index/', views.index, name='index'),
+    path('quiz_home/', views.quiz_home, name='quiz_home'),
     path('', views.index, name='quiz_home'),
     path('<int:quiz_id>/', views.take_quiz, name='take_quiz'),
-    path('<int:quiz_id>/results/', views.quiz_results, name='quiz_results'),
+    path('', views.home_redirect, name='home'),
+    path('register/', views.register, name='register'),
+    path('quiz_home/', views.quiz_home, name='quiz_home'),
+    path('', views.home_redirect, name='home'),
 ]
 
 

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Вход</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f0f0f0; }
+        .container { max-width: 400px; margin: 100px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        h2 { text-align: center; }
+        form { display: flex; flex-direction: column; }
+        input { margin: 10px 0; padding: 8px; border-radius: 4px; border: 1px solid #ccc; }
+        button { padding: 10px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .link { margin-top: 10px; text-align: center; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Вход</h2>
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="Имя пользователя" required>
+        <input type="password" name="password" placeholder="Пароль" required>
+        <button type="submit">Войти</button>
+    </form>
+    <div class="link">
+        <a href="{% url 'quiz:register' %}">Нет аккаунта? Зарегистрироваться</a>
+    </div>
+</div>
+</body>
+</html>

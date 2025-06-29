@@ -40,5 +40,7 @@
         {% endfor %}
     </ul>
 
-    <a href="{% url 'quiz:quiz_home' %}">Вернуться к списку викторин</a>
+    <form action="{% url 'quiz:index' %}">
+        <button type="submit">Вернуться к викторинам</button>
+    </form>
 {% endblock %}

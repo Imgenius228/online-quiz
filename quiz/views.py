@@ -3,6 +3,11 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from .models import Quiz, Question, Answer
 from .forms import QuizForm
+from .forms import RegistrationForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
+from django.contrib import messages
+
 
 def index(request):
     quizzes = Quiz.objects.all()
@@ -61,19 +66,43 @@ def quiz_results(request, quiz_id):
     quiz = get_object_or_404(Quiz, id=quiz_id)
     return render(request, 'quiz/quiz_results.html', {'quiz': quiz})
 
+def home_redirect(request):
+    if request.user.is_authenticated:
+        return redirect('quiz:index')
+    return redirect('quiz:login')
+
+
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = RegistrationForm(request.POST)
         if form.is_valid():
             user = form.save()
+
+            group = Group.objects.get(name='Користувач')
+            user.groups.add(group)
+
             login(request, user)
             return redirect('quiz:index')
     else:
-        form = UserCreationForm()
-    return render(request, 'registration/register.html', {'form': form})
+        form = RegistrationForm()
+    return render(request, 'quiz/register.html', {'form': form})
 
+@login_required(login_url='/register/')
 def quiz_home(request):
-    return render(request, 'quiz/home.html')
+    return render(request, 'quiz/index.html')
 
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            auth_login(request, user)
+            return redirect('quiz:index')
+        else:
+            messages.error(request, "Неправильный логин или пароль")
+    return render(request, 'quiz/login.html')
 
-
+def logout_view(request):
+    auth_logout(request)
+    return redirect('quiz:login')

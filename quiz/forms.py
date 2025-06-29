@@ -1,5 +1,8 @@
 from django import forms
 from .models import Question, Answer
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
+
 
 class QuizForm(forms.Form):
     def __init__(self, *args, **kwargs):
@@ -14,3 +17,10 @@ class QuizForm(forms.Form):
                 widget=forms.RadioSelect,
                 required=False   # <-- Теперь не обязательно отвечать на все вопросы
             )
+
+class RegistrationForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password1', 'password2']
