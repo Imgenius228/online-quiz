@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-3pn3rhf1ds&$j%2rzadr#v)1abv@@$0*zwcxsa9h#8@7(b^mkr
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['wiktorina_balerina.onrender.com']
+ALLOWED_HOSTS = ['wiktorina-balerina.onrender.com']
 
 
 # Application definition
