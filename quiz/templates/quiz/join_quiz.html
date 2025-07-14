@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ quiz.title }}</title>
+    <style>
+        body { font-family: Arial; background: #f9f9f9; padding: 20px; }
+        .question { border: 1px solid #ccc; background: white; padding: 15px; margin-bottom: 20px; border-radius: 6px; }
+        .question h3 { margin-top: 0; }
+        .timer { font-weight: bold; color: red; }
+        .media { margin: 10px 0; }
+        .btn { padding: 8px 15px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .btn:hover { background: #218838; }
+    </style>
+</head>
+<body>
+
+<h1>{{ quiz.title }}</h1>
+<p><strong>Опис:</strong> {{ quiz.description }}</p>
+
+<form method="post">
+    {% csrf_token %}
+
+    {% for field, question in form.fields.items|zip:questions %}
+        <div class="question">
+            <h3>Питання {{ forloop.counter }}:</h3>
+            <p>{{ field.label }}</p>
+
+            {% if question.question_type == 'image' and question.image %}
+                <div class="media">
+                    <img src="{{ question.image.url }}" width="300">
+                </div>
+            {% elif question.question_type == 'video' and question.video_url %}
+                <div class="media">
+                    <iframe width="300" height="180" src="{{ question.video_url }}" frameborder="0" allowfullscreen></iframe>
+                </div>
+            {% endif %}
+
+            <p>⏱ Час: <span class="timer" data-seconds="{{ question.time_limit }}">{{ question.time_limit }}</span> сек</p>
+
+            {{ form[field.name] }}
+        </div>
+    {% endfor %}
+
+    <button type="submit" class="btn">Відправити</button>
+</form>
+
+<script>
+    // Таймери для кожного питання
+    document.querySelectorAll(".timer").forEach(timer => {
+        let seconds = parseInt(timer.dataset.seconds);
+        const interval = setInterval(() => {
+            seconds -= 1;
+            timer.textContent = seconds;
+            if (seconds <= 0) {
+                clearInterval(interval);
+                timer.style.color = "gray";
+            }
+        }, 1000);
+    });
+</script>
+
+</body>
+</html>

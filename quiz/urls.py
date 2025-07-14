@@ -19,6 +19,7 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('quiz_home/', views.quiz_home, name='quiz_home'),
     path('', views.home_redirect, name='home'),
+    path('join/', views.join_quiz_by_code, name='join_quiz'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

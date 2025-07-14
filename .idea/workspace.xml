@@ -4,15 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2da46879-213f-4af4-90d5-b4e90e792493" name="Changes" comment="рабочий">
+    <list default="true" id="2da46879-213f-4af4-90d5-b4e90e792493" name="Changes" comment="рабочий1">
+      <change afterPath="$PROJECT_DIR$/quiz/templates/quiz/join_quiz.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quiz/templatetags/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quiz/templatetags/quiz_extras.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quiz/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/quiz/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quiz/migrations/0001_initial.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/quiz/migrations/0002_alter_answer_text_alter_question_text.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/quiz/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/quiz/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quiz/templates/quiz/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/quiz/templates/quiz/base.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/quiz/templates/quiz/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/quiz/templates/quiz/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quiz/templates/quiz/results.html" beforeDir="false" afterPath="$PROJECT_DIR$/quiz/templates/quiz/results.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quiz/templates/quiz/take_quiz.html" beforeDir="false" afterPath="$PROJECT_DIR$/quiz/templates/quiz/take_quiz.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quiz/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/quiz/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/quiz/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/quiz/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quiz_app/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/quiz_app/urls.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,8 +27,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Python Script" />
         <option value="HTML File" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -50,15 +55,15 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "C:/Users/lplol/PycharmProjects/Group-Portal-2-feature_4"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/lplol/PycharmProjects/Group-Portal-2-feature_4&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\lplol\PycharmProjects\online-quiz\quiz\templates\quiz" />
@@ -89,11 +94,20 @@
       <option name="project" value="LOCAL" />
       <updated>1751193134999</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="рабочий1">
+      <option name="closed" value="true" />
+      <created>1751193999043</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1751193999043</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="рабочий" />
-    <option name="LAST_COMMIT_MESSAGE" value="рабочий" />
+    <MESSAGE value="рабочий1" />
+    <option name="LAST_COMMIT_MESSAGE" value="рабочий1" />
   </component>
 </project>

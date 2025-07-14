@@ -1,62 +1,190 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <title>Вікторини</title>
-    <style>
-        body { font-family: Arial; background: #f5f5f5; margin: 0; padding: 0; }
-        header { background: #333; color: white; padding: 10px 20px; display: flex; justify-content: space-between; }
-        .container { max-width: 900px; margin: 20px auto; background: white; padding: 20px; border-radius: 8px; }
-        h2 { border-bottom: 1px solid #ccc; padding-bottom: 5px; }
-        .quiz-list { margin: 15px 0; }
-        .quiz-item { margin-bottom: 10px; }
-        form.search-form { margin-bottom: 20px; }
-        input[type="text"] { padding: 5px; width: 70%; }
-        button { padding: 6px 12px; margin-left: 10px; }
-    </style>
+  <meta charset="UTF-8">
+  <title>Головна | Вікторини</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      padding: 30px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+    .search-box {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .search-box input[type="text"] {
+      width: 60%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .search-box button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #0d6efd;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    .search-box button:hover {
+      background: #084cdf;
+    }
+
+    .section {
+      margin-bottom: 40px;
+    }
+
+    .quiz-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .quiz-card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease;
+    }
+
+    .quiz-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .quiz-title {
+      font-weight: bold;
+      font-size: 18px;
+      margin-bottom: 8px;
+      color: #212529;
+    }
+
+    .quiz-desc {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 10px;
+    }
+
+    .quiz-meta {
+      font-size: 12px;
+      color: #888;
+    }
+
+    .no-results {
+      text-align: center;
+      font-size: 18px;
+      color: #888;
+      margin-top: 40px;
+    }
+    .quiz-card-link {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .quiz-card-link:hover {
+      transform: translateY(-4px);
+    }
+
+    .quiz-card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      transition: background 0.2s ease;
+    }
+    .quiz-card:hover {
+      background: #f0f8ff;
+    }
+
+  </style>
 </head>
 <body>
-<header>
-    <div><strong>Онлайн Вікторина</strong></div>
-    <div>
-        {% if user.is_authenticated %}
-            Привіт, {{ user.username }} | <a href="{% url 'quiz:logout' %}" style="color:lightgray;">Вийти</a>
-        {% else %}
-            <a href="{% url 'quiz:login' %}" style="color:white;">Вхід</a> |
-            <a href="{% url 'quiz:register' %}" style="color:white;">Реєстрація</a>
-        {% endif %}
-    </div>
-</header>
 
 <div class="container">
-    <form method="get" class="search-form">
-        <input type="text" name="q" placeholder="Пошук вікторини..." value="{{ query }}">
-        <button type="submit">Пошук</button>
+  <h1>Онлайн Вікторини</h1>
+
+  <div class="search-box">
+    <form method="get">
+      <input type="text" name="q" placeholder="Пошук вікторини..." value="{{ query }}">
+      <button type="submit">Пошук</button>
     </form>
+  </div>
 
-    <h2>🔝 Популярні вікторини</h2>
-    <div class="quiz-list">
+  {% if query %}
+    <div class="section">
+      <h2>Результати пошуку</h2>
+      {% if quizzes %}
+        <div class="quiz-grid">
+          {% for quiz in quizzes %}
+            <a href="{% url 'quiz:take_quiz' quiz.id %}" class="quiz-card-link">
+              <div class="quiz-card">
+                <div class="quiz-title">{{ quiz.title }}</div>
+                <div class="quiz-desc">{{ quiz.description|truncatechars:100 }}</div>
+                <div class="quiz-meta">Пройдено: {{ quiz.times_taken }} раз(ів)</div>
+              </div>
+            </a>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="no-results">Нічого не знайдено 😢</p>
+      {% endif %}
+    </div>
+  {% else %}
+    <div class="section">
+      <h2>Популярні вікторини</h2>
+      <div class="quiz-grid">
         {% for quiz in popular_quizzes %}
-            <div class="quiz-item">
-                <strong>{{ quiz.title }}</strong> — {{ quiz.times_taken }} проходжень
-                <br><a href="{% url 'quiz:take_quiz' quiz.id %}">Пройти</a>
-            </div>
-        {% empty %}
-            <p>Немає популярних вікторин.</p>
+          <a href="{% url 'quiz:take_quiz' quiz.id %}" class="quiz-card-link">
+              <div class="quiz-card">
+                <div class="quiz-title">{{ quiz.title }}</div>
+                <div class="quiz-desc">{{ quiz.description|truncatechars:100 }}</div>
+                <div class="quiz-meta">Пройдено: {{ quiz.times_taken }} раз(ів)</div>
+              </div>
+            </a>
         {% endfor %}
+      </div>
     </div>
 
-    <h2>🆕 Нові вікторини</h2>
-    <div class="quiz-list">
+    <div class="section">
+      <h2>Нові вікторини</h2>
+      <div class="quiz-grid">
         {% for quiz in new_quizzes %}
-            <div class="quiz-item">
-                <strong>{{ quiz.title }}</strong> — {{ quiz.created_at|date:"d.m.Y" }}
-                <br><a href="{% url 'quiz:take_quiz' quiz.id %}">Пройти</a>
-            </div>
-        {% empty %}
-            <p>Немає нових вікторин.</p>
+          <a href="{% url 'quiz:take_quiz' quiz.id %}" class="quiz-card-link">
+              <div class="quiz-card">
+                <div class="quiz-title">{{ quiz.title }}</div>
+                <div class="quiz-desc">{{ quiz.description|truncatechars:100 }}</div>
+                <div class="quiz-meta">Пройдено: {{ quiz.times_taken }} раз(ів)</div>
+              </div>
+            </a>
         {% endfor %}
+      </div>
     </div>
+  {% endif %}
 </div>
+
 </body>
 </html>
+

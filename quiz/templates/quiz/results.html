@@ -1,46 +1,136 @@
-{% extends 'quiz/base.html' %}
+{% load quiz_extras %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Результати вікторини</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f2f5;
+      padding: 20px;
+    }
 
-{% block title %}
-    Результаты викторины
-{% endblock %}
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
 
-{% block content %}
-    <h2>Результаты вашей викторины "{{ quiz.title }}"</h2>
-    <p>Ваш результат: {{ score }} из {{ total_questions }}</p>
+    h1 {
+      text-align: center;
+      color: #333;
+    }
 
-    <ul>
-        {% for question, user_answer_id in user_answers.items %}
-            <li>
-                <strong>{{ question.text }}</strong><br>
-                <span>Ваш ответ: </span>
-                {% if user_answer_id %}
-                    {% for answer in question.answers.all %}
-                        {% if answer.id|stringformat:"s" == user_answer_id|stringformat:"s" %}
-                            {% if answer.is_correct %}
-                                ✅ {{ answer.text }} — Правильно!
-                            {% else %}
-                                ❌ {{ answer.text }} — Неправильно!
-                            {% endif %}
-                        {% endif %}
-                    {% endfor %}
-                {% else %}
-                    ❌ <em>Вы не ответили на этот вопрос.</em>
-                {% endif %}
-                <br>
-                <span>Правильный ответ: </span>
-                {% for answer in question.answers.all %}
-                    {% for qid, correct_id in correct_answers.items %}
-                        {% if qid == question.id|stringformat:"s" and answer.id|stringformat:"s" == correct_id|stringformat:"s" %}
-                            <strong>{{ answer.text }}</strong>
-                        {% endif %}
-                    {% endfor %}
-                {% endfor %}
-            </li>
-            <hr>
-        {% endfor %}
-    </ul>
+    .result-summary {
+      font-size: 18px;
+      margin: 20px 0;
+      text-align: center;
+    }
 
+    .question {
+      margin-bottom: 25px;
+      padding: 15px;
+      border-left: 5px solid #ccc;
+      border-radius: 5px;
+      background: #fafafa;
+    }
+
+    .question.correct {
+      border-color: #28a745;
+      background: #e6f9ec;
+    }
+
+    .question.incorrect {
+      border-color: #dc3545;
+      background: #f8d7da;
+    }
+
+    .question strong {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 16px;
+    }
+
+    .answers {
+      font-size: 15px;
+      margin-top: 10px;
+    }
+
+    .label {
+      font-weight: bold;
+    }
+
+    .back {
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Результати вікторини</h1>
+
+  <div class="result-summary">
+    Ви дали <strong>{{ score }}</strong> правильних відповідей з <strong>{{ total_questions }}</strong><br>
+    Ваш результат: <strong>{{ score|floatformat:2 }}</strong> / {{ total_questions }}
+  </div>
+
+  {% for question in questions %}
+    {% with qid=question.id|stringformat:"s" %}
+    {% with user_answer=user_answers|get_item:qid %}
+    {% with correct_answer=correct_answers|get_item:qid %}
+
+      <div class="question {% if user_answer == correct_answer %}correct{% else %}incorrect{% endif %}">
+        <strong>{{ forloop.counter }}. {{ question.text }}</strong>
+        <div class="answers">
+          <div class="label">Ваша відповідь:</div>
+          {% for answer in question.answers.all %}
+            {% if answer.id|stringformat:"s" == user_answer %}
+              {{ answer.text }}
+            {% endif %}
+          {% endfor %}
+          <br>
+          <div class="label">Правильна відповідь:</div>
+          {% for answer in question.answers.all %}
+            {% if answer.id|stringformat:"s" == correct_answer %}
+              {{ answer.text }}
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+
+    {% endwith %}
+    {% endwith %}
+    {% endwith %}
+  {% endfor %}
+
+  <div class="back">
     <form action="{% url 'quiz:index' %}">
-        <button type="submit">Вернуться к викторинам</button>
+      <button type="submit">Повернутись на головну</button>
     </form>
-{% endblock %}
+  </div>
+</div>
+
+</body>
+</html>
+
+

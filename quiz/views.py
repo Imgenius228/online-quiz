@@ -8,13 +8,16 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib import messages
 
-
 def index(request):
     query = request.GET.get('q', '')
     quizzes = Quiz.objects.all()
 
     if query:
         quizzes = quizzes.filter(title__icontains=query)
+        return render(request, 'quiz/index.html', {
+            'quizzes': quizzes,
+            'query': query,
+        })
 
     new_quizzes = quizzes.order_by('-created_at')[:5]
     popular_quizzes = quizzes.order_by('-times_taken')[:5]
@@ -22,8 +25,12 @@ def index(request):
     return render(request, 'quiz/index.html', {
         'new_quizzes': new_quizzes,
         'popular_quizzes': popular_quizzes,
-        'query': query,
+        'query': '',
     })
+
+from django.shortcuts import render, get_object_or_404
+from .models import Quiz
+from .forms import QuizForm
 
 from django.shortcuts import render, get_object_or_404
 from .models import Quiz
@@ -33,46 +40,52 @@ def take_quiz(request, quiz_id):
     quiz = get_object_or_404(Quiz, id=quiz_id)
     questions = quiz.questions.all()
 
-    if request.method == "POST":
+    if request.method == 'POST':
         form = QuizForm(request.POST, questions=questions)
         if form.is_valid():
-            user_answers = {}
+            raw_answers = form.cleaned_data
+
+            user_answers = {
+                key.replace('question_', ''): str(value)
+                for key, value in raw_answers.items()
+            }
+
             correct_answers = {}
             score = 0
 
             for question in questions:
-                answer_id = form.cleaned_data.get(f"question_{question.id}")
-                user_answers[question] = answer_id
-
-            # Заполняем correct_answers словарём с ключом — строкой id вопроса, значением — id правильного ответа
-            for question in questions:
                 correct = question.answers.filter(is_correct=True).first()
-                if correct:
-                    correct_answers[str(question.id)] = correct.id
+                correct_id = str(correct.id) if correct else ''
+                qid = str(question.id)
+                user_answer = user_answers.get(qid, '')
 
-            # Подсчёт правильных ответов (score)
-            for question, answer_id in user_answers.items():
-                correct_id = correct_answers.get(str(question.id))
-                if correct_id and str(answer_id) == str(correct_id):
+                correct_answers[qid] = correct_id
+
+                if user_answer == correct_id:
                     score += 1
 
-            total_questions = questions.count()
+            quiz.times_taken += 1
+            quiz.save()
 
             return render(request, 'quiz/results.html', {
                 'quiz': quiz,
                 'user_answers': user_answers,
                 'correct_answers': correct_answers,
                 'score': score,
-                'total_questions': total_questions,
+                'total_questions': questions.count(),
                 'questions': questions,
             })
     else:
         form = QuizForm(questions=questions)
+        form_questions = list(zip(form, questions))
 
     return render(request, 'quiz/take_quiz.html', {
         'quiz': quiz,
         'form': form,
+        'form_questions': form_questions,
     })
+
+
 
 def quiz_results(request, quiz_id):
     quiz = get_object_or_404(Quiz, id=quiz_id)
@@ -118,3 +131,17 @@ def login_view(request):
 def logout_view(request):
     auth_logout(request)
     return redirect('quiz:login')
+
+
+def join_quiz_by_code(request):
+    if request.method == 'POST':
+        code = request.POST.get('code')
+        try:
+            quiz = Quiz.objects.get(invite_code=code)
+            return redirect('quiz:take_quiz', quiz_id=quiz.id)
+        except Quiz.DoesNotExist:
+            messages.error(request, "Код не знайдено 😢")
+
+    return render(request, 'quiz/join_quiz.html')
+
+
