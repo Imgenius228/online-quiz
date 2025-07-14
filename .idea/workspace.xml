@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2da46879-213f-4af4-90d5-b4e90e792493" name="Changes" comment="рабочий1">
-      <change afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quiz_app/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/quiz_app/settings.py" afterDir="false" />
-    </list>
+    <list default="true" id="2da46879-213f-4af4-90d5-b4e90e792493" name="Changes" comment="загрузка на сааааайт" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -93,12 +88,21 @@
       <option name="project" value="LOCAL" />
       <updated>1751193999043</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="загрузка на сааааайт">
+      <option name="closed" value="true" />
+      <created>1752480607597</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1752480607597</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="рабочий" />
     <MESSAGE value="рабочий1" />
-    <option name="LAST_COMMIT_MESSAGE" value="рабочий1" />
+    <MESSAGE value="загрузка на сааааайт" />
+    <option name="LAST_COMMIT_MESSAGE" value="загрузка на сааааайт" />
   </component>
 </project>
