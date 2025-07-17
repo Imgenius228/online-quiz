@@ -34,6 +34,8 @@ CSRF_TRUSTED_ORIGINS = [
     "https://wiktorina-balerina.onrender.com",
 ]
 
+CSRF_FAILURE_VIEW = 'quiz.views.custom_403'
+
 
 # Application definition
 

@@ -1,30 +1,55 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Регистрация</title>
-    <style>
-        body { font-family: Arial, sans-serif; background: #eaf4ff; }
-        .container { max-width: 400px; margin: 100px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        h2 { text-align: center; }
-        form { display: flex; flex-direction: column; }
-        input { margin: 10px 0; padding: 8px; border-radius: 4px; border: 1px solid #ccc; }
-        button { padding: 10px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; }
-        button:hover { background: #218838; }
-        .link { margin-top: 10px; text-align: center; }
-    </style>
-</head>
-<body>
-<div class="container">
-    <h2>Регистрация</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Зарегистрироваться</button>
-    </form>
-    <div class="link">
-        <a href="{% url 'quiz:login' %}">Уже есть аккаунт? Войти</a>
-    </div>
+{% extends 'quiz/base.html' %}
+{% load quiz_extras %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto p-6 bg-white rounded-2xl shadow-lg mt-8 text-center">
+  <h1 class="text-3xl font-bold mb-4 text-green-600">🎉 Результати вікторини: {{ quiz.title }}</h1>
+  <p class="text-lg mb-2 font-semibold">Ваш результат: <span class="text-blue-600">{{ score }}/{{ total_questions }}</span></p>
+
+  <div class="mt-6 text-left">
+    <h2 class="text-2xl font-semibold mb-2">✅ Відповіді:</h2>
+    <ul class="space-y-4">
+      {% for question in questions %}
+        <li class="p-4 rounded-lg shadow border border-gray-200">
+          <p class="font-semibold text-lg mb-2">🧠 {{ question.text }}</p>
+          <ul>
+            {% for answer in question.answers.all %}
+              <li class="{% if answer.id|stringformat:'s' == correct_answers|get_item:question.id %}text-green-600 font-semibold{% elif answer.id|stringformat:'s' == user_answers|get_item:question.id %}text-red-600 line-through{% else %}text-gray-700{% endif %}">
+                {{ answer.text }}
+              </li>
+            {% endfor %}
+          </ul>
+          {% if user_answers|get_item:question.id %}
+            <p class="mt-2 text-sm text-gray-500">
+              Ваша відповідь:
+              {% for a in question.answers.all %}
+                {% if a.id|stringformat:'s' == user_answers|get_item:question.id %}<strong>{{ a.text }}</strong>{% endif %}
+              {% endfor %}
+            </p>
+          {% else %}
+            <p class="mt-2 text-sm text-gray-400 italic">Ви не відповіли</p>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="mt-10">
+    <h2 class="text-xl font-bold text-purple-600 mb-2">🏆 Топ 5 результатів</h2>
+    <ul class="divide-y divide-gray-300">
+      {% for result in top_results %}
+        <li class="py-2">
+          {{ forloop.counter }}. {{ result.user.username }} — <span class="font-semibold">{{ result.score }}/{{ result.total }}</span>
+        </li>
+      {% empty %}
+        <li>Ще ніхто не проходив цю вікторину.</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <a href="{% url 'quiz:index' %}" class="mt-6 inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-xl shadow transition">
+    ⬅️ Повернутись на головну
+  </a>
 </div>
-</body>
-</html>
+{% endblock %}
+

@@ -1,0 +1,27 @@
+{% extends 'quiz/base.html' %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto mt-10 p-6 bg-white rounded-xl shadow">
+  <h1 class="text-3xl font-bold text-center mb-6 text-blue-700">📊 Моя історія результатів</h1>
+
+  {% if results %}
+    <ul class="divide-y divide-gray-200">
+      {% for result in results %}
+        <li class="py-4">
+          <p class="text-lg font-semibold text-gray-800">{{ result.quiz.title }}</p>
+          <p class="text-sm text-gray-600">Результат: <span class="font-bold text-green-600">{{ result.score }}/{{ result.total }}</span></p>
+          <p class="text-sm text-gray-500">Дата: {{ result.date_taken|date:"d.m.Y H:i" }}</p>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="text-gray-500 text-center italic">У вас ще немає результатів.</p>
+  {% endif %}
+
+  <div class="text-center mt-6">
+    <a href="{% url 'quiz:index' %}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-xl shadow transition">
+      ⬅️ На головну
+    </a>
+  </div>
+</div>
+{% endblock %}

@@ -48,3 +48,15 @@ class Answer(models.Model):
 
     def __str__(self):
         return self.text
+
+from django.contrib.auth.models import User
+
+class QuizResult(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='quiz_results')
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='results')
+    score = models.IntegerField()
+    total = models.IntegerField()
+    date_taken = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.quiz.title} - {self.score}/{self.total}"

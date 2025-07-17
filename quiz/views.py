@@ -8,6 +8,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib import messages
 from django.contrib.auth.models import Group
+from .models import QuizResult
+from django.contrib.admin.views.decorators import staff_member_required
+from django.http import HttpResponseForbidden
+from django.forms import modelform_factory, inlineformset_factory
 
 def index(request):
     query = request.GET.get('q', '')
@@ -54,6 +58,14 @@ def take_quiz(request, quiz_id):
             correct_answers = {}
             score = 0
 
+            if request.user.is_authenticated:
+                QuizResult.objects.create(
+                    user=request.user,
+                    quiz=quiz,
+                    score=score,
+                    total=questions.count()
+                )
+
             for question in questions:
                 correct = question.answers.filter(is_correct=True).first()
                 correct_id = str(correct.id) if correct else ''
@@ -68,6 +80,8 @@ def take_quiz(request, quiz_id):
             quiz.times_taken += 1
             quiz.save()
 
+            top_results = QuizResult.objects.filter(quiz=quiz).order_by('-score', 'date_taken')[:5]
+
             return render(request, 'quiz/results.html', {
                 'quiz': quiz,
                 'user_answers': user_answers,
@@ -75,7 +89,9 @@ def take_quiz(request, quiz_id):
                 'score': score,
                 'total_questions': questions.count(),
                 'questions': questions,
+                'top_results': top_results,
             })
+
     else:
         form = QuizForm(questions=questions)
         form_questions = list(zip(form, questions))
@@ -86,7 +102,10 @@ def take_quiz(request, quiz_id):
         'form_questions': form_questions,
     })
 
-
+@login_required
+def my_results(request):
+    results = QuizResult.objects.filter(user=request.user).order_by('-date_taken')
+    return render(request, 'quiz/my_results.html', {'results': results})
 
 def quiz_results(request, quiz_id):
     quiz = get_object_or_404(Quiz, id=quiz_id)
@@ -97,6 +116,26 @@ def home_redirect(request):
         return redirect('quiz:index')
     return redirect('quiz:login')
 
+@login_required
+def create_quiz(request):
+    if not request.user.is_staff:
+        return render(request, '403.html', status=403)
+
+    QuizForm = modelform_factory(Quiz, fields=['title', 'description'])
+    QuestionFormSet = inlineformset_factory(Quiz, Question, fields=['text', 'question_type', 'image', 'video_url', 'time_limit'], extra=1, can_delete=True)
+    AnswerFormSet = inlineformset_factory(Question, Answer, fields=['text', 'is_correct'], extra=2, can_delete=True)
+
+    if request.method == 'POST':
+        quiz_form = QuizForm(request.POST)
+        if quiz_form.is_valid():
+            quiz = quiz_form.save()
+            return redirect('quiz:index')
+    else:
+        quiz_form = QuizForm()
+
+    return render(request, 'quiz/create_quiz.html', {
+        'quiz_form': quiz_form,
+    })
 
 def register(request):
     if request.method == 'POST':
@@ -145,4 +184,6 @@ def join_quiz_by_code(request):
 
     return render(request, 'quiz/join_quiz.html')
 
+def custom_403(request, reason=""):
+    return render(request, '403.html', status=403)
 

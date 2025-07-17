@@ -1,0 +1,82 @@
+{% extends 'quiz/base.html' %}
+{% load static %}
+{% block content %}
+<div class="max-w-3xl mx-auto py-10">
+  <h2 class="text-2xl font-bold mb-6">Створити нову вікторину</h2>
+
+  <form method="post" enctype="multipart/form-data" class="space-y-6">
+    {% csrf_token %}
+
+    <div>
+      <label class="block font-medium mb-1">Назва вікторини</label>
+      <input type="text" name="title" class="w-full border rounded-xl px-4 py-2" required>
+    </div>
+
+    <div>
+      <label class="block font-medium mb-1">Опис</label>
+      <textarea name="description" rows="3" class="w-full border rounded-xl px-4 py-2"></textarea>
+    </div>
+
+    <div id="questions-container">
+      <!-- Динамічне додавання питань -->
+    </div>
+
+    <button type="button" onclick="addQuestion()" class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-xl">
+      ➕ Додати запитання
+    </button>
+
+    <div>
+      <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-xl">
+        ✅ Створити вікторину
+      </button>
+    </div>
+  </form>
+</div>
+
+<script>
+let questionIndex = 0;
+
+function addQuestion() {
+  const container = document.getElementById("questions-container");
+  const html = `
+    <div class="border p-4 rounded-xl shadow mb-6">
+      <h4 class="font-semibold mb-2">Питання ${questionIndex + 1}</h4>
+      <input type="text" name="questions[${questionIndex}][text]" placeholder="Текст питання"
+        class="w-full mb-2 px-3 py-2 border rounded-xl" required>
+
+      <label class="block mb-1">Тип:</label>
+      <select name="questions[${questionIndex}][type]" class="mb-2 px-3 py-2 border rounded-xl">
+        <option value="text">Текст</option>
+        <option value="image">Зображення</option>
+        <option value="video">Відео</option>
+      </select>
+
+      <label class="block mb-1">Зображення (не обов'язково):</label>
+      <input type="file" name="questions[${questionIndex}][image]" class="mb-2">
+
+      <label class="block mb-1">Відео URL (не обов'язково):</label>
+      <input type="url" name="questions[${questionIndex}][video_url]" class="w-full mb-2 px-3 py-2 border rounded-xl">
+
+      <label class="block mb-1">Час на запитання (сек):</label>
+      <input type="number" name="questions[${questionIndex}][time_limit]" class="mb-2 px-3 py-2 border rounded-xl" min="5" value="30">
+
+      <div>
+        <label class="block mb-1 font-semibold">Варіанти відповідей:</label>
+        <div>
+          <input type="text" name="questions[${questionIndex}][answers][0][text]" placeholder="Варіант 1"
+            class="px-3 py-2 border rounded-xl mr-2" required>
+          <input type="checkbox" name="questions[${questionIndex}][answers][0][correct]"> Правильний
+        </div>
+        <div class="mt-1">
+          <input type="text" name="questions[${questionIndex}][answers][1][text]" placeholder="Варіант 2"
+            class="px-3 py-2 border rounded-xl mr-2" required>
+          <input type="checkbox" name="questions[${questionIndex}][answers][1][correct]"> Правильний
+        </div>
+      </div>
+    </div>
+  `;
+  container.insertAdjacentHTML("beforeend", html);
+  questionIndex++;
+}
+</script>
+{% endblock %}
