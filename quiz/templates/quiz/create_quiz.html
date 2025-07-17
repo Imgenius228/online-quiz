@@ -1,36 +1,137 @@
 {% extends 'quiz/base.html' %}
 {% load static %}
+
 {% block content %}
-<div class="max-w-3xl mx-auto py-10">
-  <h2 class="text-2xl font-bold mb-6">Створити нову вікторину</h2>
+<style>
+  .form-section {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    margin-top: 30px;
+  }
 
-  <form method="post" enctype="multipart/form-data" class="space-y-6">
-    {% csrf_token %}
+  .form-section h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #212529;
+  }
 
-    <div>
-      <label class="block font-medium mb-1">Назва вікторини</label>
-      <input type="text" name="title" class="w-full border rounded-xl px-4 py-2" required>
-    </div>
+  .form-group {
+    margin-bottom: 20px;
+  }
 
-    <div>
-      <label class="block font-medium mb-1">Опис</label>
-      <textarea name="description" rows="3" class="w-full border rounded-xl px-4 py-2"></textarea>
-    </div>
+  .form-group label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 6px;
+  }
 
-    <div id="questions-container">
-      <!-- Динамічне додавання питань -->
-    </div>
+  .form-group input[type="text"],
+  .form-group input[type="number"],
+  .form-group input[type="url"],
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: border-color 0.2s;
+  }
 
-    <button type="button" onclick="addQuestion()" class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-xl">
-      ➕ Додати запитання
-    </button>
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: #0d6efd;
+  }
 
-    <div>
-      <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-xl">
+  .question-block {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 25px;
+    border: 1px solid #dee2e6;
+  }
+
+  .question-block h4 {
+    margin-bottom: 15px;
+    font-size: 18px;
+    color: #343a40;
+  }
+
+  .btn-primary,
+  .btn-add {
+    background-color: #0d6efd;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .btn-primary:hover,
+  .btn-add:hover {
+    background-color: #0b5ed7;
+  }
+
+  .btn-add {
+    background-color: #ffc107;
+    color: #212529;
+    margin-bottom: 20px;
+  }
+
+  .answer-option {
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+  }
+
+  .answer-option input[type="text"] {
+    flex: 1;
+    margin-right: 10px;
+  }
+
+  .answer-option input[type="checkbox"] {
+    transform: scale(1.2);
+  }
+</style>
+
+<div class="container">
+  <div class="form-section">
+    <h2>📝 Створити нову вікторину</h2>
+
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label for="title">Назва вікторини</label>
+        <input type="text" name="title" id="title" required>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Опис</label>
+        <textarea name="description" id="description" rows="3"></textarea>
+      </div>
+
+      <div id="questions-container">
+        <!-- Questions will be added here -->
+      </div>
+
+      <button type="button" onclick="addQuestion()" class="btn-add">
+        ➕ Додати запитання
+      </button>
+
+      <br>
+
+      <button type="submit" class="btn-primary">
         ✅ Створити вікторину
       </button>
-    </div>
-  </form>
+    </form>
+  </div>
 </div>
 
 <script>
@@ -38,45 +139,57 @@ let questionIndex = 0;
 
 function addQuestion() {
   const container = document.getElementById("questions-container");
+
   const html = `
-    <div class="border p-4 rounded-xl shadow mb-6">
-      <h4 class="font-semibold mb-2">Питання ${questionIndex + 1}</h4>
-      <input type="text" name="questions[${questionIndex}][text]" placeholder="Текст питання"
-        class="w-full mb-2 px-3 py-2 border rounded-xl" required>
+    <div class="question-block">
+      <h4>Питання ${questionIndex + 1}</h4>
 
-      <label class="block mb-1">Тип:</label>
-      <select name="questions[${questionIndex}][type]" class="mb-2 px-3 py-2 border rounded-xl">
-        <option value="text">Текст</option>
-        <option value="image">Зображення</option>
-        <option value="video">Відео</option>
-      </select>
+      <div class="form-group">
+        <label>Текст питання</label>
+        <input type="text" name="questions[${questionIndex}][text]" required>
+      </div>
 
-      <label class="block mb-1">Зображення (не обов'язково):</label>
-      <input type="file" name="questions[${questionIndex}][image]" class="mb-2">
+      <div class="form-group">
+        <label>Тип</label>
+        <select name="questions[${questionIndex}][type]">
+          <option value="text">Текст</option>
+          <option value="image">Зображення</option>
+          <option value="video">Відео</option>
+        </select>
+      </div>
 
-      <label class="block mb-1">Відео URL (не обов'язково):</label>
-      <input type="url" name="questions[${questionIndex}][video_url]" class="w-full mb-2 px-3 py-2 border rounded-xl">
+      <div class="form-group">
+        <label>Зображення (не обов'язково)</label>
+        <input type="file" name="questions[${questionIndex}][image]">
+      </div>
 
-      <label class="block mb-1">Час на запитання (сек):</label>
-      <input type="number" name="questions[${questionIndex}][time_limit]" class="mb-2 px-3 py-2 border rounded-xl" min="5" value="30">
+      <div class="form-group">
+        <label>Відео URL (не обов'язково)</label>
+        <input type="url" name="questions[${questionIndex}][video_url]">
+      </div>
 
-      <div>
-        <label class="block mb-1 font-semibold">Варіанти відповідей:</label>
-        <div>
-          <input type="text" name="questions[${questionIndex}][answers][0][text]" placeholder="Варіант 1"
-            class="px-3 py-2 border rounded-xl mr-2" required>
+      <div class="form-group">
+        <label>Час на запитання (секунди)</label>
+        <input type="number" name="questions[${questionIndex}][time_limit]" value="30" min="5">
+      </div>
+
+      <div class="form-group">
+        <label>Варіанти відповідей</label>
+        <div class="answer-option">
+          <input type="text" name="questions[${questionIndex}][answers][0][text]" placeholder="Варіант 1" required>
           <input type="checkbox" name="questions[${questionIndex}][answers][0][correct]"> Правильний
         </div>
-        <div class="mt-1">
-          <input type="text" name="questions[${questionIndex}][answers][1][text]" placeholder="Варіант 2"
-            class="px-3 py-2 border rounded-xl mr-2" required>
+        <div class="answer-option">
+          <input type="text" name="questions[${questionIndex}][answers][1][text]" placeholder="Варіант 2" required>
           <input type="checkbox" name="questions[${questionIndex}][answers][1][correct]"> Правильний
         </div>
       </div>
     </div>
   `;
-  container.insertAdjacentHTML("beforeend", html);
+
+  container.insertAdjacentHTML('beforeend', html);
   questionIndex++;
 }
 </script>
 {% endblock %}
+
