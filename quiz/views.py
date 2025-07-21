@@ -55,7 +55,10 @@ def take_quiz(request, quiz_id):
                 for key, value in raw_answers.items()
             }
 
+            user_answers = {}
             correct_answers = {}
+            answer_results = {}
+
             score = 0
 
             if request.user.is_authenticated:
@@ -67,14 +70,14 @@ def take_quiz(request, quiz_id):
                 )
 
             for question in questions:
+                selected_id = request.POST.get(f'question_{question.id}')
+                user_answers[str(question.id)] = selected_id
                 correct = question.answers.filter(is_correct=True).first()
-                correct_id = str(correct.id) if correct else ''
-                qid = str(question.id)
-                user_answer = user_answers.get(qid, '')
+                correct_answers[str(question.id)] = correct
+                selected_answer = question.answers.filter(id=selected_id).first()
+                answer_results[str(question.id)] = selected_answer
 
-                correct_answers[qid] = correct_id
-
-                if user_answer == correct_id:
+                if selected_answer and selected_answer == correct:
                     score += 1
 
             quiz.times_taken += 1
