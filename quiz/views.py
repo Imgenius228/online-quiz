@@ -74,6 +74,7 @@ def take_quiz(request, quiz_id):
                 correct_answers[str(question.id)] = correct
 
                 user_answer_id = user_answers.get(f"question_{question.id}")
+                answer = None
                 if user_answer_id:
                     answer = question.answers.filter(id=user_answer_id).first()
                     answer_results[str(question.id)] = answer
