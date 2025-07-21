@@ -3,113 +3,116 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <title>Результати вікторини</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f8f9fa;
-      padding: 30px;
-    }
+    <meta charset="UTF-8">
+    <title>Результати вікторини</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
 
-    .result-container {
-      max-width: 800px;
-      margin: 0 auto;
-      background: #fff;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
 
-    h1 {
-      text-align: center;
-      margin-bottom: 30px;
-    }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #0d6efd;
+        }
 
-    .score {
-      text-align: center;
-      font-size: 20px;
-      margin-bottom: 20px;
-    }
+        .score {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 40px;
+            color: #28a745;
+        }
 
-    .question-block {
-      margin-bottom: 25px;
-      border-bottom: 1px solid #ddd;
-      padding-bottom: 15px;
-    }
+        .question {
+            margin-bottom: 30px;
+            padding: 15px 20px;
+            background: #f1f3f5;
+            border-radius: 8px;
+        }
 
-    .question-text {
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
+        .question p {
+            margin: 10px 0;
+        }
 
-    .answer {
-      margin-left: 15px;
-      font-size: 15px;
-    }
+        .correct {
+            color: #198754;
+            font-weight: bold;
+        }
 
-    .correct {
-      color: green;
-    }
+        .incorrect {
+            color: #dc3545;
+            font-weight: bold;
+        }
 
-    .wrong {
-      color: red;
-    }
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            text-align: center;
+            width: 100%;
+        }
 
-    .back-btn {
-      display: block;
-      text-align: center;
-      margin-top: 30px;
-    }
+        .back-link a {
+            display: inline-block;
+            background: #0d6efd;
+            color: white;
+            padding: 10px 25px;
+            text-decoration: none;
+            border-radius: 6px;
+        }
 
-    .back-btn a {
-      padding: 10px 20px;
-      background: #0d6efd;
-      color: white;
-      text-decoration: none;
-      border-radius: 8px;
-      transition: background 0.3s ease;
-    }
-
-    .back-btn a:hover {
-      background: #084bcc;
-    }
-  </style>
+        .back-link a:hover {
+            background: #0b5ed7;
+        }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <h1>Результати: {{ quiz.title }}</h1>
 
-<div class="result-container">
-  <h1>Результати вікторини: {{ quiz.title }}</h1>
+        <div class="score">
+            Ваш результат: {{ score }} / {{ total_questions }}
+        </div>
 
-  <div class="score">
-    Ваш результат: {{ score }} з {{ total_questions }}<br>
-    Правильних відповідей: {{ score }}<br>
-    Неправильних: {{ total_questions|add:"-`score`" }}
-  </div>
+        {% for question in questions %}
+            <div class="question">
+                <p><strong>Запитання {{ forloop.counter }}:</strong> {{ question.text }}</p>
 
-  {% for question in questions %}
-    <div class="question-block">
-      <p class="question-text">{{ question.text }}</p>
+                {% with user_answer=answer_results|get_item:question.id %}
+                    {% if user_answer %}
+                        <p>Ваша відповідь:
+                            {% if user_answer.id == correct_answers|get_item:question.id.id %}
+                                <span class="correct">{{ user_answer.text }} ✓</span>
+                            {% else %}
+                                <span class="incorrect">{{ user_answer.text }} ✗</span>
+                            {% endif %}
+                        </p>
+                    {% else %}
+                        <p class="incorrect">Ви не відповіли на це запитання ✗</p>
+                    {% endif %}
+                {% endwith %}
 
-      {% if answer_results|get_item:question.id %}
-        {% if answer_results|get_item:question.id.id == correct_answers|get_item:question.id.id %}
-          <p class="answer correct">✅ Ваша відповідь: {{ answer_results|get_item:question.id.text }}</p>
-        {% else %}
-          <p class="answer wrong">❌ Ваша відповідь: {{ answer_results|get_item:question.id.text }}</p>
-          <p class="answer correct">✅ Правильна відповідь: {{ correct_answers|get_item:question.id.text }}</p>
-        {% endif %}
-      {% else %}
-        <p class="answer wrong">❌ Ви не відповіли</p>
-        <p class="answer correct">✅ Правильна відповідь: {{ correct_answers|get_item:question.id.text }}</p>
-      {% endif %}
+                <p>Правильна відповідь:
+                    <span class="correct">{{ correct_answers|get_item:question.id.text }}</span>
+                </p>
+            </div>
+        {% endfor %}
+
+        <div class="back-link">
+            <a href="{% url 'quiz:index' %}">На головну</a>
+        </div>
     </div>
-  {% endfor %}
-
-  <div class="back-btn">
-    <a href="{% url 'quiz:index' %}">🔙 Повернутись на головну</a>
-  </div>
-</div>
-
 </body>
 </html>
 
