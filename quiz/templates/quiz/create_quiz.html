@@ -1,214 +1,192 @@
-{% extends 'quiz/base.html' %}
 {% load static %}
-
-{% block content %}
-<style>
-  body {
-    background: #f4f6f8;
-    font-family: 'Segoe UI', sans-serif;
-  }
-
-  .form-wrapper {
-    max-width: 800px;
-    margin: 60px auto;
-    background: white;
-    border-radius: 16px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
-    padding: 40px;
-    animation: fadeIn 0.5s ease;
-  }
-
-  .form-title {
-    font-size: 28px;
-    font-weight: bold;
-    margin-bottom: 30px;
-    color: #222;
-    text-align: center;
-  }
-
-  .form-group {
-    margin-bottom: 25px;
-  }
-
-  .form-group label {
-    font-weight: 500;
-    display: block;
-    margin-bottom: 8px;
-    color: #444;
-  }
-
-  .form-group input,
-  .form-group textarea,
-  .form-group select {
-    width: 100%;
-    padding: 12px 16px;
-    font-size: 15px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    background: #f9f9f9;
-    transition: 0.2s ease;
-  }
-
-  .form-group input:focus,
-  .form-group textarea:focus,
-  .form-group select:focus {
-    border-color: #007bff;
-    outline: none;
-    background: #fff;
-  }
-
-  .question-block {
-    background: #f8f9fa;
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 30px;
-    border: 1px solid #ddd;
-  }
-
-  .question-block h4 {
-    margin-bottom: 15px;
-    color: #333;
-    font-size: 18px;
-  }
-
-  .answer-group {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-
-  .answer-group input[type="text"] {
-    flex: 1;
-  }
-
-  .btn {
-    display: inline-block;
-    padding: 12px 22px;
-    font-weight: 600;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: 0.2s ease;
-    font-size: 15px;
-  }
-
-  .btn-add {
-    background-color: #ffc107;
-    color: #212529;
-    margin-bottom: 30px;
-  }
-
-  .btn-add:hover {
-    background-color: #e0a800;
-  }
-
-  .btn-submit {
-    background-color: #007bff;
-    color: white;
-    width: 100%;
-    margin-top: 20px;
-  }
-
-  .btn-submit:hover {
-    background-color: #0069d9;
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(15px);
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Створення Вікторини</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f8f9fa;
+      margin: 0;
+      padding: 0;
     }
-    to {
-      opacity: 1;
-      transform: translateY(0);
+
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
-  }
-</style>
 
-<div class="form-wrapper">
-  <div class="form-title">🧠 Створення нової вікторини</div>
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #0d6efd;
+    }
 
+    form label {
+      display: block;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    textarea,
+    input[type="url"],
+    select,
+    input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-top: 5px;
+      font-size: 15px;
+    }
+
+    .question-block {
+      margin-top: 30px;
+      padding: 20px;
+      background: #f1f3f5;
+      border-radius: 10px;
+    }
+
+    .answers {
+      margin-top: 15px;
+    }
+
+    .answer {
+      margin-bottom: 10px;
+    }
+
+    .add-btn {
+      margin-top: 20px;
+      background: #198754;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .submit-btn {
+      margin-top: 30px;
+      background: #0d6efd;
+      color: white;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      text-decoration: none;
+      color: #6c757d;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Створення нової вікторини</h2>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
 
-    <div class="form-group">
-      <label>Назва вікторини</label>
-      <input type="text" name="title" placeholder="Наприклад: Історія України" required>
-    </div>
+    <label for="title">Назва вікторини:</label>
+    <input type="text" name="title" required>
 
-    <div class="form-group">
-      <label>Опис</label>
-      <textarea name="description" rows="3" placeholder="Короткий опис або правила..."></textarea>
-    </div>
+    <label for="description">Опис:</label>
+    <textarea name="description" rows="3" required></textarea>
 
-    <div id="questions-container"></div>
+    <div id="questions">
+      <div class="question-block">
+        <label>Текст запитання:</label>
+        <input type="text" name="question_0" required>
 
-    <button type="button" onclick="addQuestion()" class="btn btn-add">
-      ➕ Додати запитання
-    </button>
-
-    <button type="submit" class="btn btn-submit">
-      ✅ Створити вікторину
-    </button>
-  </form>
-</div>
-
-<script>
-let questionIndex = 0;
-
-function addQuestion() {
-  const container = document.getElementById("questions-container");
-
-  const html = `
-    <div class="question-block">
-      <h4>Питання ${questionIndex + 1}</h4>
-
-      <div class="form-group">
-        <label>Текст питання</label>
-        <input type="text" name="questions[${questionIndex}][text]" required>
-      </div>
-
-      <div class="form-group">
-        <label>Тип</label>
-        <select name="questions[${questionIndex}][type]">
+        <label>Тип запитання:</label>
+        <select name="question_type_0">
           <option value="text">Текст</option>
           <option value="image">Зображення</option>
           <option value="video">Відео</option>
         </select>
-      </div>
 
-      <div class="form-group">
-        <label>Зображення (не обов'язково)</label>
-        <input type="file" name="questions[${questionIndex}][image]">
-      </div>
+        <label>Посилання на зображення/відео (необов’язково):</label>
+        <input type="url" name="media_0">
 
-      <div class="form-group">
-        <label>Відео URL (не обов'язково)</label>
-        <input type="url" name="questions[${questionIndex}][video_url]">
-      </div>
+        <label>Час на відповідь (сек):</label>
+        <input type="number" name="time_limit_0" value="30" min="5">
 
-      <div class="form-group">
-        <label>Час на запитання (секунди)</label>
-        <input type="number" name="questions[${questionIndex}][time_limit]" value="30" min="5">
-      </div>
-
-      <div class="form-group">
-        <label>Варіанти відповідей</label>
-        <div class="answer-group">
-          <input type="text" name="questions[${questionIndex}][answers][0][text]" placeholder="Варіант 1" required>
-          <input type="checkbox" name="questions[${questionIndex}][answers][0][correct]"> Правильний
-        </div>
-        <div class="answer-group">
-          <input type="text" name="questions[${questionIndex}][answers][1][text]" placeholder="Варіант 2" required>
-          <input type="checkbox" name="questions[${questionIndex}][answers][1][correct]"> Правильний
+        <div class="answers">
+          <div class="answer">
+            <input type="text" name="answer_0_0" placeholder="Варіант 1" required>
+            <label><input type="radio" name="correct_0" value="0"> Правильна</label>
+          </div>
+          <div class="answer">
+            <input type="text" name="answer_0_1" placeholder="Варіант 2">
+            <label><input type="radio" name="correct_0" value="1"> Правильна</label>
+          </div>
         </div>
       </div>
     </div>
-  `;
-  container.insertAdjacentHTML('beforeend', html);
-  questionIndex++;
-}
+
+    <button type="button" class="add-btn" onclick="addQuestion()">➕ Додати ще запитання</button>
+
+    <button type="submit" class="submit-btn">✅ Створити</button>
+    <a href="{% url 'quiz:index' %}" class="back-link">⬅ Назад на головну</a>
+  </form>
+</div>
+
+<script>
+  let questionIndex = 1;
+
+  function addQuestion() {
+    const container = document.getElementById('questions');
+    const block = document.createElement('div');
+    block.className = 'question-block';
+    block.innerHTML = `
+      <label>Текст запитання:</label>
+      <input type="text" name="question_${questionIndex}" required>
+
+      <label>Тип запитання:</label>
+      <select name="question_type_${questionIndex}">
+        <option value="text">Текст</option>
+        <option value="image">Зображення</option>
+        <option value="video">Відео</option>
+      </select>
+
+      <label>Посилання на зображення/відео (необов’язково):</label>
+      <input type="url" name="media_${questionIndex}">
+
+      <label>Час на відповідь (сек):</label>
+      <input type="number" name="time_limit_${questionIndex}" value="30" min="5">
+
+      <div class="answers">
+        <div class="answer">
+          <input type="text" name="answer_${questionIndex}_0" placeholder="Варіант 1" required>
+          <label><input type="radio" name="correct_${questionIndex}" value="0"> Правильна</label>
+        </div>
+        <div class="answer">
+          <input type="text" name="answer_${questionIndex}_1" placeholder="Варіант 2">
+          <label><input type="radio" name="correct_${questionIndex}" value="1"> Правильна</label>
+        </div>
+      </div>
+    `;
+    container.appendChild(block);
+    questionIndex++;
+  }
 </script>
-{% endblock %}
+
+</body>
+</html>
 

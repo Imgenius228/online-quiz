@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2da46879-213f-4af4-90d5-b4e90e792493" name="Changes" comment="загрузка на сааааайт" />
+    <list default="true" id="2da46879-213f-4af4-90d5-b4e90e792493" name="Changes" comment="added allowed host6">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quiz/templates/quiz/create_quiz.html" beforeDir="false" afterPath="$PROJECT_DIR$/quiz/templates/quiz/create_quiz.html" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -104,13 +107,39 @@
       <option name="project" value="LOCAL" />
       <updated>1752481540082</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="added allowed host5">
+      <option name="closed" value="true" />
+      <created>1752765805586</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1752765805586</updated>
+    </task>
+    <task id="LOCAL-00006" summary="added allowed host6">
+      <option name="closed" value="true" />
+      <created>1752766517934</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1752766517934</updated>
+    </task>
+    <task id="LOCAL-00007" summary="added allowed host6">
+      <option name="closed" value="true" />
+      <created>1752767532305</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1752767532305</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="рабочий" />
     <MESSAGE value="рабочий1" />
     <MESSAGE value="загрузка на сааааайт" />
-    <option name="LAST_COMMIT_MESSAGE" value="загрузка на сааааайт" />
+    <MESSAGE value="added allowed host5" />
+    <MESSAGE value="added allowed host6" />
+    <option name="LAST_COMMIT_MESSAGE" value="added allowed host6" />
   </component>
 </project>
