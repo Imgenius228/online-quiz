@@ -70,14 +70,15 @@ def take_quiz(request, quiz_id):
                 )
 
             for question in questions:
-                selected_id = request.POST.get(f'question_{question.id}')
-                user_answers[str(question.id)] = selected_id
                 correct = question.answers.filter(is_correct=True).first()
                 correct_answers[str(question.id)] = correct
-                selected_answer = question.answers.filter(id=selected_id).first()
-                answer_results[str(question.id)] = selected_answer
 
-                if selected_answer and selected_answer == correct:
+                user_answer_id = user_answers.get(f"question_{question.id}")
+                if user_answer_id:
+                    answer = question.answers.filter(id=user_answer_id).first()
+                    answer_results[str(question.id)] = answer
+
+                if answer and correct and answer.id == correct.id:
                     score += 1
 
             quiz.times_taken += 1
