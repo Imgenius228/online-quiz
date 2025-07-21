@@ -154,36 +154,53 @@
     const container = document.getElementById('questions');
     const block = document.createElement('div');
     block.className = 'question-block';
-    block.innerHTML = `
+    block.innerHTML = getQuestionHTML(questionIndex);
+    container.appendChild(block);
+    questionIndex++;
+  }
+
+  function getQuestionHTML(index) {
+    return `
       <label>Текст запитання:</label>
-      <input type="text" name="question_${questionIndex}" required>
+      <input type="text" name="question_${index}" required>
 
       <label>Тип запитання:</label>
-      <select name="question_type_${questionIndex}">
+      <select name="question_type_${index}">
         <option value="text">Текст</option>
         <option value="image">Зображення</option>
         <option value="video">Відео</option>
       </select>
 
       <label>Посилання на зображення/відео (необов’язково):</label>
-      <input type="url" name="media_${questionIndex}">
+      <input type="url" name="media_${index}">
 
       <label>Час на відповідь (сек):</label>
-      <input type="number" name="time_limit_${questionIndex}" value="30" min="5">
+      <input type="number" name="time_limit_${index}" value="30" min="5">
 
-      <div class="answers">
+      <div class="answers" id="answers_${index}">
         <div class="answer">
-          <input type="text" name="answer_${questionIndex}_0" placeholder="Варіант 1" required>
-          <label><input type="radio" name="correct_${questionIndex}" value="0"> Правильна</label>
+          <input type="text" name="answer_${index}_0" placeholder="Варіант 1" required>
+          <label><input type="radio" name="correct_${index}" value="0"> Правильна</label>
         </div>
         <div class="answer">
-          <input type="text" name="answer_${questionIndex}_1" placeholder="Варіант 2">
-          <label><input type="radio" name="correct_${questionIndex}" value="1"> Правильна</label>
+          <input type="text" name="answer_${index}_1" placeholder="Варіант 2" required>
+          <label><input type="radio" name="correct_${index}" value="1"> Правильна</label>
         </div>
       </div>
+      <button type="button" class="add-btn" onclick="addAnswer(${index})">➕ Додати відповідь</button>
     `;
-    container.appendChild(block);
-    questionIndex++;
+  }
+
+  function addAnswer(questionId) {
+    const answersDiv = document.getElementById(`answers_${questionId}`);
+    const count = answersDiv.querySelectorAll('.answer').length;
+    const div = document.createElement('div');
+    div.className = 'answer';
+    div.innerHTML = `
+      <input type="text" name="answer_${questionId}_${count}" placeholder="Варіант ${count + 1}" required>
+      <label><input type="radio" name="correct_${questionId}" value="${count}"> Правильна</label>
+    `;
+    answersDiv.appendChild(div);
   }
 </script>
 
