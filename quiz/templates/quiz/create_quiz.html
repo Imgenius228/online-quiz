@@ -7,28 +7,53 @@
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: #f4f4f4;
+      background-color: #f8f9fa;
       margin: 0;
-      padding: 20px;
+      padding: 0;
+    }
+
+    .navbar {
+      background: #0d6efd;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .navbar h2 {
+      margin: 0;
+    }
+
+    .navbar a {
+      color: white;
+      text-decoration: none;
+      margin-left: 15px;
+      font-weight: bold;
+    }
+
+    .navbar a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 30px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
     h2 {
+      margin-bottom: 20px;
       color: #0d6efd;
     }
 
-    form {
-      background: #fff;
-      padding: 25px;
-      border-radius: 8px;
-      max-width: 900px;
-      margin: auto;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
     label {
-      display: block;
-      margin-top: 15px;
       font-weight: bold;
+      margin-top: 15px;
+      display: block;
     }
 
     input[type="text"],
@@ -37,105 +62,135 @@
     textarea,
     select {
       width: 100%;
-      padding: 8px;
+      padding: 10px;
       margin-top: 5px;
-      border-radius: 4px;
+      margin-bottom: 15px;
       border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
     }
 
     .question-block {
-      border: 1px solid #ddd;
       padding: 20px;
-      margin-top: 20px;
+      border: 1px solid #ccc;
       border-radius: 6px;
-      background: #fdfdfd;
+      margin-top: 25px;
+      background: #f5f5f5;
     }
 
-    .answers {
-      margin-top: 10px;
-    }
-
-    .answer {
+    .answers .answer {
       display: flex;
       align-items: center;
       margin-bottom: 10px;
     }
 
-    .answer input[type="text"] {
+    .answers input[type="text"] {
       flex: 1;
       margin-right: 10px;
     }
 
     .btn {
-      margin-top: 20px;
-      padding: 10px 20px;
       background: #0d6efd;
       color: white;
       border: none;
+      padding: 10px 18px;
       border-radius: 6px;
       cursor: pointer;
+      font-weight: bold;
+      font-size: 15px;
     }
 
-    .add-btn {
-      background: #198754;
-      margin-top: 10px;
-    }
-
-    .add-btn:hover,
     .btn:hover {
-      opacity: 0.9;
+      background: #084fcb;
     }
+
+    .btn-secondary {
+      background: #198754;
+    }
+
+    .btn-secondary:hover {
+      background: #146c43;
+    }
+
+    .btn-block {
+      display: block;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    .question-header {
+      font-size: 16px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
   </style>
 </head>
 <body>
 
-<h2>Створити нову вікторину</h2>
-<form method="post">
-  {% csrf_token %}
-  <label>Назва вікторини:</label>
-  <input type="text" name="title" required>
-
-  <label>Опис:</label>
-  <textarea name="description"></textarea>
-
-  <!-- Перше запитання -->
-  <div class="question-block" data-question-index="0">
-    <label>Текст запитання:</label>
-    <input type="text" name="question_0" required>
-
-    <label>Тип запитання:</label>
-    <select name="question_type_0">
-      <option value="text">Текст</option>
-      <option value="image">Зображення</option>
-      <option value="video">Відео</option>
-    </select>
-
-    <label>Посилання на зображення/відео (необов’язково):</label>
-    <input type="url" name="media_0">
-
-    <label>Час на відповідь (сек):</label>
-    <input type="number" name="time_limit_0" value="30" min="5">
-
-    <div class="answers" id="answers_0">
-      <div class="answer">
-        <input type="text" name="answer_0_0" placeholder="Варіант 1" required>
-        <label><input type="radio" name="correct_0" value="0"> Правильна</label>
-      </div>
-      <div class="answer">
-        <input type="text" name="answer_0_1" placeholder="Варіант 2" required>
-        <label><input type="radio" name="correct_0" value="1"> Правильна</label>
-      </div>
-    </div>
-    <button type="button" class="add-btn" onclick="addAnswer(0)">➕ Додати відповідь</button>
+<div class="navbar">
+  <h2>QuizMaster</h2>
+  <div>
+    <a href="{% url 'quiz:index' %}">🏠 Головна</a>
+    {% if user.is_authenticated %}
+      Привіт, {{ user.username }} |
+      <a href="{% url 'quiz:logout' %}">Вийти</a>
+    {% else %}
+      <a href="{% url 'quiz:login' %}">Увійти</a>
+      <a href="{% url 'quiz:register' %}">Реєстрація</a>
+    {% endif %}
   </div>
+</div>
 
-  <!-- Контейнер для нових запитань -->
-  <div id="questions-container"></div>
+<div class="container">
+  <h2>Створення нової вікторини</h2>
 
-  <button type="button" class="add-btn" onclick="addQuestion()">➕ Додати ще запитання</button>
-  <br><br>
-  <button type="submit" class="btn">✅ Створити вікторину</button>
-</form>
+  <form method="post">
+    {% csrf_token %}
+    <label for="title">Назва вікторини:</label>
+    <input type="text" name="title" required>
+
+    <label for="description">Опис:</label>
+    <textarea name="description"></textarea>
+
+    <div class="question-block" data-question-index="0">
+      <div class="question-header">Запитання 1</div>
+      <label>Текст запитання:</label>
+      <input type="text" name="question_0" required>
+
+      <label>Тип запитання:</label>
+      <select name="question_type_0">
+        <option value="text">Текст</option>
+        <option value="image">Зображення</option>
+        <option value="video">Відео</option>
+      </select>
+
+      <label>Посилання на зображення/відео (необов’язково):</label>
+      <input type="url" name="media_0">
+
+      <label>Час на відповідь (сек):</label>
+      <input type="number" name="time_limit_0" value="30" min="5">
+
+      <div class="answers" id="answers_0">
+        <div class="answer">
+          <input type="text" name="answer_0_0" placeholder="Варіант 1" required>
+          <label><input type="radio" name="correct_0" value="0"> Правильна</label>
+        </div>
+        <div class="answer">
+          <input type="text" name="answer_0_1" placeholder="Варіант 2" required>
+          <label><input type="radio" name="correct_0" value="1"> Правильна</label>
+        </div>
+      </div>
+      <button type="button" class="btn btn-secondary" onclick="addAnswer(0)">➕ Додати варіант</button>
+    </div>
+
+    <div id="questions-container"></div>
+
+    <button type="button" class="btn btn-secondary btn-block" onclick="addQuestion()">➕ Додати ще запитання</button>
+    <button type="submit" class="btn btn-block">✅ Створити вікторину</button>
+  </form>
+</div>
 
 <script>
   let questionIndex = 1;
@@ -145,6 +200,8 @@
     const q = questionIndex;
     const html = `
       <div class="question-block" data-question-index="${q}">
+        <div class="question-header">Запитання ${q + 1}</div>
+
         <label>Текст запитання:</label>
         <input type="text" name="question_${q}" required>
 
@@ -155,7 +212,7 @@
           <option value="video">Відео</option>
         </select>
 
-        <label>Посилання на зображення/відео (необов’язково):</label>
+        <label>Посилання на зображення/відео:</label>
         <input type="url" name="media_${q}">
 
         <label>Час на відповідь (сек):</label>
@@ -171,7 +228,7 @@
             <label><input type="radio" name="correct_${q}" value="1"> Правильна</label>
           </div>
         </div>
-        <button type="button" class="add-btn" onclick="addAnswer(${q})">➕ Додати відповідь</button>
+        <button type="button" class="btn btn-secondary" onclick="addAnswer(${q})">➕ Додати варіант</button>
       </div>
     `;
     container.insertAdjacentHTML('beforeend', html);
@@ -193,5 +250,3 @@
 
 </body>
 </html>
-
-
