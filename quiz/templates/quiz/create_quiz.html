@@ -109,35 +109,36 @@
     <label for="description">Опис:</label>
     <textarea name="description" rows="3" required></textarea>
 
-    <div id="questions">
-      <div class="question-block">
-        <label>Текст запитання:</label>
-        <input type="text" name="question_0" required>
+    <div class="question-block">
+      <label>Текст запитання:</label>
+      <input type="text" name="question_0" required>
 
-        <label>Тип запитання:</label>
-        <select name="question_type_0">
-          <option value="text">Текст</option>
-          <option value="image">Зображення</option>
-          <option value="video">Відео</option>
-        </select>
+      <label>Тип запитання:</label>
+      <select name="question_type_0">
+        <option value="text">Текст</option>
+        <option value="image">Зображення</option>
+        <option value="video">Відео</option>
+      </select>
 
-        <label>Посилання на зображення/відео (необов’язково):</label>
-        <input type="url" name="media_0">
+      <label>Посилання на зображення/відео (необов’язково):</label>
+      <input type="url" name="media_0">
 
-        <label>Час на відповідь (сек):</label>
-        <input type="number" name="time_limit_0" value="30" min="5">
+      <label>Час на відповідь (сек):</label>
+      <input type="number" name="time_limit_0" value="30" min="5">
 
-        <div class="answers">
-          <div class="answer">
-            <input type="text" name="answer_0_0" placeholder="Варіант 1" required>
-            <label><input type="radio" name="correct_0" value="0"> Правильна</label>
-          </div>
-          <div class="answer">
-            <input type="text" name="answer_0_1" placeholder="Варіант 2">
-            <label><input type="radio" name="correct_0" value="1"> Правильна</label>
-          </div>
+      <div class="answers" id="answers_0">
+        <div class="answer">
+          <input type="text" name="answer_0_0" placeholder="Варіант 1" required>
+          <label><input type="radio" name="correct_0" value="0"> Правильна</label>
+        </div>
+        <div class="answer">
+          <input type="text" name="answer_0_1" placeholder="Варіант 2" required>
+          <label><input type="radio" name="correct_0" value="1"> Правильна</label>
         </div>
       </div>
+
+      <!-- ✅ ДОДАЙ ось цей рядок прямо сюди -->
+      <button type="button" class="add-btn" onclick="addAnswer(0)">➕ Додати відповідь</button>
     </div>
 
     <button type="button" class="add-btn" onclick="addQuestion()">➕ Додати ще запитання</button>
