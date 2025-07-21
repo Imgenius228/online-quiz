@@ -3,208 +3,195 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
-  <title>Створення Вікторини</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+  <title>Створити вікторину</title>
   <style>
     body {
-      font-family: 'Inter', sans-serif;
-      background: #f8f9fa;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f4f4;
       margin: 0;
-      padding: 0;
-    }
-
-    .container {
-      max-width: 800px;
-      margin: 40px auto;
-      background: white;
-      padding: 30px 40px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      padding: 20px;
     }
 
     h2 {
-      text-align: center;
-      margin-bottom: 30px;
       color: #0d6efd;
     }
 
-    form label {
+    form {
+      background: #fff;
+      padding: 25px;
+      border-radius: 8px;
+      max-width: 900px;
+      margin: auto;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    label {
       display: block;
-      margin-top: 20px;
+      margin-top: 15px;
       font-weight: bold;
     }
 
     input[type="text"],
-    textarea,
     input[type="url"],
-    select,
-    input[type="number"] {
+    input[type="number"],
+    textarea,
+    select {
       width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+      padding: 8px;
       margin-top: 5px;
-      font-size: 15px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
     }
 
     .question-block {
-      margin-top: 30px;
+      border: 1px solid #ddd;
       padding: 20px;
-      background: #f1f3f5;
-      border-radius: 10px;
+      margin-top: 20px;
+      border-radius: 6px;
+      background: #fdfdfd;
     }
 
     .answers {
-      margin-top: 15px;
+      margin-top: 10px;
     }
 
     .answer {
+      display: flex;
+      align-items: center;
       margin-bottom: 10px;
     }
 
-    .add-btn {
-      margin-top: 20px;
-      background: #198754;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 14px;
+    .answer input[type="text"] {
+      flex: 1;
+      margin-right: 10px;
     }
 
-    .submit-btn {
-      margin-top: 30px;
+    .btn {
+      margin-top: 20px;
+      padding: 10px 20px;
       background: #0d6efd;
       color: white;
-      padding: 12px 25px;
       border: none;
-      border-radius: 8px;
-      font-size: 16px;
+      border-radius: 6px;
       cursor: pointer;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
     }
 
-    .back-link {
-      display: block;
-      text-align: center;
-      margin-top: 20px;
-      text-decoration: none;
-      color: #6c757d;
+    .add-btn {
+      background: #198754;
+      margin-top: 10px;
+    }
+
+    .add-btn:hover,
+    .btn:hover {
+      opacity: 0.9;
     }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <h2>Створення нової вікторини</h2>
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
+<h2>Створити нову вікторину</h2>
+<form method="post">
+  {% csrf_token %}
+  <label>Назва вікторини:</label>
+  <input type="text" name="title" required>
 
-    <label for="title">Назва вікторини:</label>
-    <input type="text" name="title" required>
+  <label>Опис:</label>
+  <textarea name="description"></textarea>
 
-    <label for="description">Опис:</label>
-    <textarea name="description" rows="3" required></textarea>
+  <!-- Перше запитання -->
+  <div class="question-block" data-question-index="0">
+    <label>Текст запитання:</label>
+    <input type="text" name="question_0" required>
 
-    <div class="question-block">
-      <label>Текст запитання:</label>
-      <input type="text" name="question_0" required>
+    <label>Тип запитання:</label>
+    <select name="question_type_0">
+      <option value="text">Текст</option>
+      <option value="image">Зображення</option>
+      <option value="video">Відео</option>
+    </select>
 
-      <label>Тип запитання:</label>
-      <select name="question_type_0">
-        <option value="text">Текст</option>
-        <option value="image">Зображення</option>
-        <option value="video">Відео</option>
-      </select>
+    <label>Посилання на зображення/відео (необов’язково):</label>
+    <input type="url" name="media_0">
 
-      <label>Посилання на зображення/відео (необов’язково):</label>
-      <input type="url" name="media_0">
+    <label>Час на відповідь (сек):</label>
+    <input type="number" name="time_limit_0" value="30" min="5">
 
-      <label>Час на відповідь (сек):</label>
-      <input type="number" name="time_limit_0" value="30" min="5">
-
-      <div class="answers" id="answers_0">
-        <div class="answer">
-          <input type="text" name="answer_0_0" placeholder="Варіант 1" required>
-          <label><input type="radio" name="correct_0" value="0"> Правильна</label>
-        </div>
-        <div class="answer">
-          <input type="text" name="answer_0_1" placeholder="Варіант 2" required>
-          <label><input type="radio" name="correct_0" value="1"> Правильна</label>
-        </div>
+    <div class="answers" id="answers_0">
+      <div class="answer">
+        <input type="text" name="answer_0_0" placeholder="Варіант 1" required>
+        <label><input type="radio" name="correct_0" value="0"> Правильна</label>
       </div>
-
-      <!-- ✅ ДОДАЙ ось цей рядок прямо сюди -->
-      <button type="button" class="add-btn" onclick="addAnswer(0)">➕ Додати відповідь</button>
+      <div class="answer">
+        <input type="text" name="answer_0_1" placeholder="Варіант 2" required>
+        <label><input type="radio" name="correct_0" value="1"> Правильна</label>
+      </div>
     </div>
+    <button type="button" class="add-btn" onclick="addAnswer(0)">➕ Додати відповідь</button>
+  </div>
 
-    <button type="button" class="add-btn" onclick="addQuestion()">➕ Додати ще запитання</button>
+  <!-- Контейнер для нових запитань -->
+  <div id="questions-container"></div>
 
-    <button type="submit" class="submit-btn">✅ Створити</button>
-    <a href="{% url 'quiz:index' %}" class="back-link">⬅ Назад на головну</a>
-  </form>
-</div>
+  <button type="button" class="add-btn" onclick="addQuestion()">➕ Додати ще запитання</button>
+  <br><br>
+  <button type="submit" class="btn">✅ Створити вікторину</button>
+</form>
 
 <script>
   let questionIndex = 1;
 
   function addQuestion() {
-    const container = document.getElementById('questions');
-    const block = document.createElement('div');
-    block.className = 'question-block';
-    block.innerHTML = getQuestionHTML(questionIndex);
-    container.appendChild(block);
+    const container = document.getElementById('questions-container');
+    const q = questionIndex;
+    const html = `
+      <div class="question-block" data-question-index="${q}">
+        <label>Текст запитання:</label>
+        <input type="text" name="question_${q}" required>
+
+        <label>Тип запитання:</label>
+        <select name="question_type_${q}">
+          <option value="text">Текст</option>
+          <option value="image">Зображення</option>
+          <option value="video">Відео</option>
+        </select>
+
+        <label>Посилання на зображення/відео (необов’язково):</label>
+        <input type="url" name="media_${q}">
+
+        <label>Час на відповідь (сек):</label>
+        <input type="number" name="time_limit_${q}" value="30" min="5">
+
+        <div class="answers" id="answers_${q}">
+          <div class="answer">
+            <input type="text" name="answer_${q}_0" placeholder="Варіант 1" required>
+            <label><input type="radio" name="correct_${q}" value="0"> Правильна</label>
+          </div>
+          <div class="answer">
+            <input type="text" name="answer_${q}_1" placeholder="Варіант 2" required>
+            <label><input type="radio" name="correct_${q}" value="1"> Правильна</label>
+          </div>
+        </div>
+        <button type="button" class="add-btn" onclick="addAnswer(${q})">➕ Додати відповідь</button>
+      </div>
+    `;
+    container.insertAdjacentHTML('beforeend', html);
     questionIndex++;
   }
 
-  function getQuestionHTML(index) {
-    return `
-      <label>Текст запитання:</label>
-      <input type="text" name="question_${index}" required>
-
-      <label>Тип запитання:</label>
-      <select name="question_type_${index}">
-        <option value="text">Текст</option>
-        <option value="image">Зображення</option>
-        <option value="video">Відео</option>
-      </select>
-
-      <label>Посилання на зображення/відео (необов’язково):</label>
-      <input type="url" name="media_${index}">
-
-      <label>Час на відповідь (сек):</label>
-      <input type="number" name="time_limit_${index}" value="30" min="5">
-
-      <div class="answers" id="answers_${index}">
-        <div class="answer">
-          <input type="text" name="answer_${index}_0" placeholder="Варіант 1" required>
-          <label><input type="radio" name="correct_${index}" value="0"> Правильна</label>
-        </div>
-        <div class="answer">
-          <input type="text" name="answer_${index}_1" placeholder="Варіант 2" required>
-          <label><input type="radio" name="correct_${index}" value="1"> Правильна</label>
-        </div>
-      </div>
-      <button type="button" class="add-btn" onclick="addAnswer(${index})">➕ Додати відповідь</button>
-    `;
-  }
-
   function addAnswer(questionId) {
-    const answersDiv = document.getElementById(`answers_${questionId}`);
-    const count = answersDiv.querySelectorAll('.answer').length;
-    const div = document.createElement('div');
-    div.className = 'answer';
-    div.innerHTML = `
-      <input type="text" name="answer_${questionId}_${count}" placeholder="Варіант ${count + 1}" required>
-      <label><input type="radio" name="correct_${questionId}" value="${count}"> Правильна</label>
+    const container = document.getElementById(`answers_${questionId}`);
+    const answerCount = container.children.length;
+    const html = `
+      <div class="answer">
+        <input type="text" name="answer_${questionId}_${answerCount}" placeholder="Варіант ${answerCount + 1}" required>
+        <label><input type="radio" name="correct_${questionId}" value="${answerCount}"> Правильна</label>
+      </div>
     `;
-    answersDiv.appendChild(div);
+    container.insertAdjacentHTML('beforeend', html);
   }
 </script>
 
 </body>
 </html>
+
 
