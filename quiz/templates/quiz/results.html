@@ -2,135 +2,109 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <title>Результати вікторини</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f0f2f5;
-      padding: 20px;
-    }
+    <meta charset="UTF-8">
+    <title>Результати</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
 
-    .container {
-      max-width: 800px;
-      margin: auto;
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-    }
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
 
-    h1 {
-      text-align: center;
-      color: #333;
-    }
+        h1 {
+            text-align: center;
+            color: #343a40;
+        }
 
-    .result-summary {
-      font-size: 18px;
-      margin: 20px 0;
-      text-align: center;
-    }
+        .summary {
+            text-align: center;
+            margin-bottom: 30px;
+        }
 
-    .question {
-      margin-bottom: 25px;
-      padding: 15px;
-      border-left: 5px solid #ccc;
-      border-radius: 5px;
-      background: #fafafa;
-    }
+        .question-block {
+            margin-bottom: 20px;
+        }
 
-    .question.correct {
-      border-color: #28a745;
-      background: #e6f9ec;
-    }
+        .correct {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 10px;
+            border-radius: 8px;
+        }
 
-    .question.incorrect {
-      border-color: #dc3545;
-      background: #f8d7da;
-    }
+        .incorrect {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            border-radius: 8px;
+        }
 
-    .question strong {
-      display: block;
-      margin-bottom: 5px;
-      font-size: 16px;
-    }
+        .answer-label {
+            font-weight: bold;
+        }
 
-    .answers {
-      font-size: 15px;
-      margin-top: 10px;
-    }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            color: #0d6efd;
+            text-decoration: none;
+            font-weight: bold;
+        }
 
-    .label {
-      font-weight: bold;
-    }
-
-    .back {
-      text-align: center;
-      margin-top: 40px;
-    }
-
-    button {
-      padding: 10px 20px;
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #0056b3;
-    }
-  </style>
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-
 <div class="container">
-  <h1>Результати вікторини</h1>
+    <h1>Результати вікторини</h1>
 
-  <div class="result-summary">
-    Ви дали <strong>{{ score }}</strong> правильних відповідей з <strong>{{ total_questions }}</strong><br>
-    Ваш результат: <strong>{{ score|floatformat:2 }}</strong> / {{ total_questions }}
-  </div>
+    <div class="summary">
+        <p>Правильних відповідей: <strong>{{ score }}/{{ total_questions }}</strong></p>
+    </div>
 
-  {% for question in questions %}
-    {% with qid=question.id|stringformat:"s" %}
-    {% with user_answer=user_answers|get_item:qid %}
-    {% with correct_answer=correct_answers|get_item:qid %}
-
-      <div class="question {% if user_answer == correct_answer %}correct{% else %}incorrect{% endif %}">
-        <strong>{{ forloop.counter }}. {{ question.text }}</strong>
-        <div class="answers">
-          <div class="label">Ваша відповідь:</div>
-          {% for answer in question.answers.all %}
-            {% if answer.id|stringformat:"s" == user_answer %}
-              {{ answer.text }}
-            {% endif %}
-          {% endfor %}
-          <br>
-          <div class="label">Правильна відповідь:</div>
-          {% for answer in question.answers.all %}
-            {% if answer.id|stringformat:"s" == correct_answer %}
-              {{ answer.text }}
-            {% endif %}
-          {% endfor %}
+    {% for question in questions %}
+        <div class="question-block">
+            <div><strong>{{ question.text }}</strong></div>
+            {% with user_answer=user_answers|get_item:question.id|stringformat:"s" %}
+                {% if user_answer == correct_answers|get_item:question.id %}
+                    <div class="correct">
+                        <span class="answer-label">Ваша відповідь (правильно):</span>
+                        {{ question.answers.get(id=user_answer).text }}
+                    </div>
+                {% else %}
+                    <div class="incorrect">
+                        <span class="answer-label">Ваша відповідь:</span>
+                        {% if question.answers.filter(id=user_answer).exists %}
+                            {{ question.answers.get(id=user_answer).text }}
+                        {% else %}
+                            [не обрано]
+                        {% endif %}
+                        <br>
+                        <span class="answer-label">Правильна відповідь:</span>
+                        {{ question.answers.get(id=correct_answers|get_item:question.id).text }}
+                    </div>
+                {% endif %}
+            {% endwith %}
         </div>
-      </div>
+    {% endfor %}
 
-    {% endwith %}
-    {% endwith %}
-    {% endwith %}
-  {% endfor %}
-
-  <div class="back">
-    <form action="{% url 'quiz:index' %}">
-      <button type="submit">Повернутись на головну</button>
-    </form>
-  </div>
+    <a href="{% url 'quiz:index' %}" class="back-link">← Повернутись на головну</a>
 </div>
-
 </body>
 </html>
+
 
 
