@@ -93,6 +93,7 @@ def take_quiz(request, quiz_id):
                 'total_questions': questions.count(),
                 'questions': questions,
                 'top_results': top_results,
+                'answer_results': answer_results,
             })
 
     else:
